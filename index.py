@@ -16,7 +16,7 @@ import csv
 
 
 # Access keys from Streamlit Secrets
-openai.api_key = st.secrets["api]["OPENAI_API_KEY"]
+openai.api_key = st.secrets["api"]["OPENAI_API_KEY"]
 google_api_key = st.secrets["api"]["GOOGLE_API_KEY"]
 custom_search_engine_id = st.secrets["api"]["CUSTOM_SEARCH_ENGINE_ID"]
 
