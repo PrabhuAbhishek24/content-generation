@@ -475,11 +475,11 @@ elif selected_section == "Content Generation":
         st.subheader("Download Options")
 
         # Button to download as SCORM package
-        if st.button("Download the PDF as SCORM Package"):
+        if st.button("Generate the PDF as SCORM Package"):
             save_as_scorm_pdf(response)
             st.success("SCORM package generated. Click the 'Download SCORM Package' button above.")
 
-        if st.button("Download the Word File as SCORM Package"):
+        if st.button("Generate the Word File as SCORM Package"):
             # Generate the SCORM package for the Word document
             scorm_word = save_as_scorm_word(response, file_name="response.docx")
 
@@ -525,13 +525,13 @@ elif selected_section == "PDF Analysis":
             st.subheader("Download Options")
 
             # Button to download the PDF content and response as a SCORM package
-            scorm_button = st.button("Download the Response as PDF SCORM Package")
+            scorm_button = st.button("Generate the Response as PDF SCORM Package")
             if scorm_button:
                 # Only save the response in the SCORM package
                 save_as_scorm_pdf(response)  # Save only the response in PDF
                 st.success("SCORM package generated. Check the 'Download SCORM Package' button.")
 
-            if st.button("Download the Response as SCORM Word Package"):
+            if st.button("Generate the Response as SCORM Word Package"):
                 # Generate the SCORM package for the Word document with only the response
                 scorm_word = save_as_scorm_word(response, file_name="response.docx")
 
