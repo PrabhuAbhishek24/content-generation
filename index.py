@@ -184,7 +184,7 @@ def save_as_pdf(content, file_name="response.pdf"):
     pdf.add_page()
 
     # Add the logo
-    pdf.image('C:\\Users\\Abhishek Prabhu\\Music\\AI Content Generation\\logo.jpeg', x=10, y=8, w=30)
+    pdf.image('assets/logo.jpeg', x=10, y=8, w=30)
 
     # Title of the document
     pdf.set_font("Arial", style='B', size=16)
@@ -224,7 +224,7 @@ def save_as_scorm_word(content, file_name="scorm_package.zip"):
         docx_buffer = io.BytesIO()
         doc = Document()
         # Add the logo to the Word document
-        logo_path = 'C:\\Users\\Abhishek Prabhu\\Music\\AI Content Generation\\logo.jpeg'
+        logo_path = "assets/logo.jpeg"
         if Path(logo_path).is_file():
             doc.add_picture(logo_path, width=Inches(1.5))
         doc.add_paragraph('\n')
