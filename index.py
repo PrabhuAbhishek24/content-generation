@@ -277,8 +277,9 @@ def get_response(text):
 # Function to fetch medical and pharma-related data from GPT-3
 def fetch_medical_pharma_data(query):
     prompt = f"""
+    You are an expert in the pharmaceutical and medical domain only. Only answer those questions and don't answer any other questions.
     Please provide reliable and accurate medical and pharmaceutical data related to the following query.
-    The data should include at least 15 to 20 entries and be formatted as a CSV for the medical and pharmaceutical domain only.
+    The data should include at least 15 to 20 entries and be formatted as a CSV for the medical and pharmaceutical domain only.Dont provide csv data of any other domain.
     The data must be accurate and trustworthy.
 
     Query: {query}
