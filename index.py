@@ -642,8 +642,8 @@ elif selected_section == "CSV Content Generation":
             if df is not None:
                 st.subheader("CSV Data Preview")
                 st.dataframe(df)  # Display CSV as table
-            # Horizontal line before download options
-            st.markdown("---")
+       # Horizontal line before download options
+       st.markdown("---")
 
                 # Provide a button to download the CSV file
                 csv_buffer = io.StringIO()
