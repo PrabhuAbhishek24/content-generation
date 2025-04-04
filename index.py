@@ -696,6 +696,7 @@ elif selected_section == "Research Search":
 
 # Streamlit Integration for PPT Generation
 elif selected_section == "PPT Development":
+    st.markdown("---")
     st.header("📊 PPT Content Generation")
 
     # Step 1: Get the domain
