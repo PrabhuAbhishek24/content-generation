@@ -270,8 +270,7 @@ def save_as_scorm_button(content):
     )
 
 
-# Function to get response from OpenAI using chat completions (for medical and pharma queries)
-def get_response(text):
+def get_response_csv(text):
     try:
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -283,57 +282,71 @@ def get_response(text):
 
 
 # Function to fetch medical and pharma-related data from GPT-3
-def fetch_medical_pharma_data(query):
+# Function to fetch data from GPT-3 based on domain and query
+
+# Function to fetch structured CSV data from GPT-3
+def fetch_gpt_response_csv(domain, query):
     prompt = f"""
-    You are an expert in the pharmaceutical and medical domain only. Only answer those questions and don't answer any other questions.
-    Please provide reliable and accurate medical and pharmaceutical data related to the following query.
-    The data should include at least 15 to 20 entries and be formatted as a CSV for the medical and pharmaceutical domain only.Dont provide csv data of any other domain.
-    The data must be accurate and trustworthy.
-
+    Please provide reliable and accurate data related to the following query in the domain of {domain}.
+    Don't answer queries or provide CSV data for any other domain except the one provided by the user.
+    The data should include at least 15 to 20 entries and be formatted as a proper CSV with headers and rows.
+    
+    The response **must** strictly follow this format:
+    
+    ```
+    Column1,Column2,Column3
+    Value1,Value2,Value3
+    Value4,Value5,Value6
+    ```
+    
+    Ensure that the output is structured properly as CSV without additional text, explanations, or formatting.
+    
     Query: {query}
-
-    The result should be in CSV format with headers and rows.
     """
-    response = get_response(prompt)
-    return response
+    response = get_response_csv(prompt)  # Fetch response from GPT-3
+    return response.strip()
 
 
-# Function to create SCORM package
-def create_scorm_package(csv_content):
+
+
+
+
+# Function to create SCORM package dynamically based on domain and query
+def create_scorm_package(csv_content, domain, query):
     # Create an in-memory binary stream for the zip file
     zip_buffer = io.BytesIO()
 
     with zipfile.ZipFile(zip_buffer, "w") as zip_file:
         # Add the CSV content to the zip file
-        zip_file.writestr("medical_pharma_data.csv", csv_content)
+        zip_file.writestr("data.csv", csv_content)
 
-        # Add imsmanifest.xml to the zip file
-        imsmanifest_content = """<?xml version="1.0" encoding="UTF-8"?>
+        # Dynamically create imsmanifest.xml content
+        imsmanifest_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <manifest identifier="scorm_2004" version="1.0">
     <organizations>
         <organization identifier="org_1">
-            <title>Medical and Pharma SCORM Package</title>
+            <title>{domain} SCORM Package</title>
         </organization>
     </organizations>
     <resources>
         <resource identifier="res_1" type="webcontent" href="index.html">
-            <file href="medical_pharma_data.csv"/>
+            <file href="data.csv"/>
             <file href="index.html"/>
         </resource>
     </resources>
 </manifest>"""
         zip_file.writestr("imsmanifest.xml", imsmanifest_content)
 
-        # Add index.html to the zip file
-        index_html_content = """
-<!DOCTYPE html>
+        # Create dynamic index.html content with the domain and query
+        index_html_content = f"""<!DOCTYPE html>
 <html>
 <head>
-    <title>Medical and Pharma Data</title>
+    <title>{domain} Data</title>
 </head>
 <body>
-    <h1>Welcome to the Medical and Pharma SCORM Package</h1>
-    <p>This package contains reliable medical and pharmaceutical data.</p>
+    <h1>Welcome to the {domain} SCORM Package</h1>
+    <p><strong>Query:</strong> {query}</p>
+    <p>This package contains generated data based on the domain and query provided.</p>
 </body>
 </html>
 """
@@ -342,6 +355,13 @@ def create_scorm_package(csv_content):
     # Rewind the buffer to the beginning
     zip_buffer.seek(0)
     return zip_buffer
+# Function to convert CSV string to DataFrame
+def csv_to_dataframe(csv_string):
+    try:
+        df = pd.read_csv(io.StringIO(csv_string))
+        return df
+    except Exception as e:
+        return None  # Handle invalid CSV cases
 
 
 def generate_detailed_ppt_content(topic):
@@ -585,40 +605,70 @@ elif selected_section == "PDF Analysis":
 
 # Streamlit Section to Handle User Input and SCORM Package Generation
 elif selected_section == "CSV Content Generation":
-    st.title("CSV Content Generation")
+    # Horizontal line
+    st.markdown("---")
 
-    # Text area for the user to enter the query
-    query = st.text_area(
-        "Enter your medical or pharmaceutical query:",
-        height=200
+    st.header("🔍 CSV Content Generation")
+
+    # User selects the domain first
+    domain = st.text_input(
+        "Enter the domain in which the answer is required:",
+        placeholder="Example: Medical, Pharmaceutical, Finance, etc."
     )
 
-    # Check if the user has entered a query
-    if query:
-        # Fetch the response using a function to generate data
-        response = fetch_medical_pharma_data(query)
+    # Ensure session state exists for response storage
+    if "generated_response" not in st.session_state:
+        st.session_state.generated_response = None
 
-        # Display the generated data in a text area
-        st.subheader("Generated Medical & Pharma Data (CSV format)")
-        st.text_area(
-            "Generated Data",
-            value=response,
-            height=300
+    if domain:
+        query = st.text_area(
+            "Enter your query below:",
+            height=200,
+            placeholder=f"Enter any query related to the {domain} domain",
         )
 
-        # Button to generate and download the CSV as a SCORM package
-        if st.button("Generate CSV File"):
-            # Generate the SCORM package from the response
-            scorm_package = create_scorm_package(response)
+        if query:
+            # Check if a new query has been entered
+            if query != st.session_state.get("last_query"):
+                # Fetch response and store in session state
+                st.session_state.generated_response = fetch_gpt_response_csv(domain, query)
+                st.session_state.last_query = query  # Update last query
 
-            # Provide a download button for the SCORM package
-            st.download_button(
-                label="Download CSV File as SCORM Package",
-                data=scorm_package,
-                file_name="medical_pharma_scorm.zip",
-                mime="application/zip"
-            )
+            # Convert response to CSV format and display
+            csv_data = st.session_state.generated_response
+            df = csv_to_dataframe(csv_data)
 
+            if df is not None:
+                st.subheader("CSV Data Preview")
+                st.dataframe(df)  # Display CSV as table
+
+                # Provide a button to download the CSV file
+                csv_buffer = io.StringIO()
+                df.to_csv(csv_buffer, index=False)
+                st.download_button(
+                    label="Download CSV File",
+                    data=csv_buffer.getvalue(),
+                    file_name=f"{domain.lower().replace(' ', '_')}_data.csv",
+                    mime="text/csv"
+                )
+
+                # Button to generate and download the CSV as a SCORM package
+                if st.button("Generate SCORM Package"):
+                    scorm_package = create_scorm_package(csv_data, domain, query)
+                    st.download_button(
+                        label="Download CSV File as SCORM Package",
+                        data=scorm_package.getvalue(),
+                        file_name=f"{domain.lower().replace(' ', '_')}_scorm.zip",
+                        mime="application/zip"
+                    )
+            else:
+                st.warning("⚠ The generated response is not in a valid CSV format.")
+
+    # Horizontal line
+    st.markdown("---")
+
+    # Footer
+    st.caption("Developed by **Corbin Technology Solutions**")
 
 
 # Research Search Section
