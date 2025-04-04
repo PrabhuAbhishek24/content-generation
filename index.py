@@ -433,7 +433,6 @@ def create_professional_ppt(content, topic, file_name="presentation.pptx"):
     return file_name
 
 
-
 # Streamlit UI
 st.set_page_config(page_title="Content and Research Analysis", layout="wide")
 st.title("📚 Content Generation And Analysis System")
@@ -701,7 +700,7 @@ elif selected_section == "PPT Development":
 
     # Step 1: Get the domain
     domain = st.text_input(
-        "Enter the domain for your presentation:",
+        "Enter the domain for your presentation:", 
         placeholder="e.g., Medical, Finance, Education"
     )
 
@@ -718,16 +717,14 @@ elif selected_section == "PPT Development":
         if domain and topic:
             st.info("Generating detailed content for your presentation. Please wait...")
             detailed_content = generate_detailed_ppt_content(domain, topic)
-
             if "Error" not in detailed_content:
-                ppt_file_name = create_professional_ppt(detailed_content, topic, domain)
+                ppt_file_name = create_professional_ppt(detailed_content, f"{domain} - {topic}")
                 st.success("Your PowerPoint presentation has been successfully generated!")
-
                 with open(ppt_file_name, "rb") as file:
                     st.download_button(
-                        label="Download Your PPT",
-                        data=file,
-                        file_name=ppt_file_name.split("/")[-1],
+                        "Download Your PPT",
+                        file,
+                        file_name=ppt_file_name,
                         mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
                     )
             else:
@@ -740,7 +737,6 @@ elif selected_section == "PPT Development":
 
     # Footer
     st.caption("Developed by **Corbin Technology Solutions**")
-
 
 elif selected_section == "Instructions":
     st.header("📝 Instructions")
