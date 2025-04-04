@@ -490,7 +490,7 @@ elif selected_section == "Content Generation":
             # Check if a new query has been entered
             if query != st.session_state.get("last_query"):
                 # Fetch response and store in session state
-                st.session_state.generated_response = fetch_gpt_response-content_gen(domain, query)
+                st.session_state.generated_response = fetch_gpt_response_content_gen(domain, query)
                 st.session_state.last_query = query  # Update last query
 
             # Display the response
