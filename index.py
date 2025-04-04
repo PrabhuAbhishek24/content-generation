@@ -463,12 +463,12 @@ if selected_section == "About":
     st.success(
         "This application integrates OpenAI's GPT-3.5 and Google Custom Search API to provide a seamless platform for "
         "content generation, PDF analysis, CSV data creation, research exploration, and PowerPoint presentation development. "
-        "It is specifically designed for the pharmaceutical and medical domains."
+        "It is designed to cater to various domains, making it a versatile tool for professionals, researchers, and educators."
     )
 
     st.info("### 2. What does the Content Generation section offer?")
     st.success(
-        "Users can input queries related to pharmaceuticals and medicine to generate detailed content using GPT-3.5. "
+        "Users can input queries related to any field to generate detailed content using GPT-3.5. "
         "The content can be downloaded as SCORM packages in PDF or Word formats."
     )
 
@@ -480,12 +480,12 @@ if selected_section == "About":
 
     st.info("### 4. What can I do in the CSV Content Generation section?")
     st.success(
-        "Generate CSV data for medical and pharmaceutical queries. The CSV files can be packaged and downloaded as SCORM-compatible files."
+        "Generate structured CSV data for different domains based on user queries. The CSV files can be packaged and downloaded as SCORM-compatible files."
     )
 
     st.info("### 5. What features are available in the Research Search section?")
     st.success(
-        "Input a research query to fetch results from trusted sources using the Google Custom Search API. Only medically relevant results are displayed for efficiency."
+        "Input a research query to fetch results from trusted sources using the Google Custom Search API. The system ensures that results are relevant and reliable."
     )
 
     st.info("### 6. How does the PPT Development section help?")
@@ -495,8 +495,8 @@ if selected_section == "About":
 
     st.info("### 7. Who should use this application?")
     st.success(
-        "This tool is ideal for medical and pharmaceutical professionals, researchers, and educators who require tailored content generation, "
-        "research insights, and analysis tools in their domain."
+        "This tool is ideal for professionals, researchers, educators, and content creators who require tailored content generation, "
+        "research insights, and analysis tools across various domains."
     )
 
 
