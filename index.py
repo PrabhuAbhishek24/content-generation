@@ -766,21 +766,32 @@ elif selected_section == "PPT Development":
             placeholder="e.g., Drug Discovery, Stock Market Trends, Online Learning Platforms"
         )
 
-    # Step 3: Generate and download PPT
+    # Step 3: Generate and preview content before PPT download
     if st.button("Generate PPT"):
         if domain and topic:
             st.info("Generating detailed content for your presentation. Please wait...")
             detailed_content = generate_detailed_ppt_content(domain, topic)
+
             if "Error" not in detailed_content:
-                ppt_file_name = create_professional_ppt(detailed_content, f"{domain} - {topic}")
-                st.success("Your PowerPoint presentation has been successfully generated!")
-                with open(ppt_file_name, "rb") as file:
-                    st.download_button(
-                        "Download Your PPT",
-                        file,
-                        file_name=ppt_file_name,
-                        mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-                    )
+                ppt_bytes, slide_count = create_professional_ppt(detailed_content, f"{domain} - {topic}")
+                st.success("PowerPoint presentation generated successfully!")
+
+                # Display structured content preview
+                st.subheader("📄 Generated Content Preview")
+                for i, slide in enumerate(detailed_content, 1):
+                    st.write(f"**Slide {i}: {slide['title']}**")
+                    st.write(f"{slide['content']}\n")
+
+                # Show slide count
+                st.write(f"🔢 **Total Slides:** {slide_count}")
+
+                # Download button
+                st.download_button(
+                    "📥 Download Your PPT",
+                    ppt_bytes,
+                    file_name=f"{domain}_{topic}.pptx",
+                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                )
             else:
                 st.error(detailed_content)
         else:
