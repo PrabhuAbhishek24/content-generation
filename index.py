@@ -407,8 +407,8 @@ def generate_detailed_ppt_content(domain, topic):
     except Exception as e:
         return f"Error: {str(e)}"
 
-def create_professional_ppt(content, topic):
-    """Create a well-formatted professional PowerPoint presentation and return as bytes."""
+def create_professional_ppt(content, topic, file_name="presentation.pptx"):
+    """Create a well-formatted professional PowerPoint presentation."""
     ppt = Presentation()
 
     # Set consistent font styles
@@ -425,32 +425,27 @@ def create_professional_ppt(content, topic):
     title = slide.shapes.title
     subtitle = slide.placeholders[1]
     title.text = topic
-    subtitle.text = f"A Comprehensive Overview on {topic}"
+    subtitle.text = f"A Comprehensive Overview in {domain} Domain"
 
-    # Process structured content into slides
-    slide_count = 1  # Start with title slide
-    for slide_data in content:  # content is expected to be a list of dicts with 'title' and 'content'
-        slide_title = slide_data["title"]
-        slide_content = slide_data["content"]
+    # Process GPT content into slides
+    sections = content.split("\n\n")
+    for section in sections:
+        if ":" in section:  # Detect title: content structure
+            slide_title, slide_content = section.split(":", 1)
 
-        # Add a new slide for each section
-        slide = ppt.slides.add_slide(ppt.slide_layouts[1])
-        title = slide.shapes.title
-        title.text = slide_title.strip()
+            # Add a new slide for each section
+            slide = ppt.slides.add_slide(ppt.slide_layouts[1])
+            title = slide.shapes.title
+            title.text = slide_title.strip()
 
-        # Add content to the slide
-        content_box = slide.placeholders[1]
-        content_box.text = slide_content.strip()
-        set_textbox_style(content_box.text_frame)
+            # Add content to the slide
+            content_box = slide.placeholders[1]
+            content_box.text = slide_content.strip()
+            set_textbox_style(content_box.text_frame)
 
-        slide_count += 1
-
-    # Save the presentation in memory buffer
-    ppt_bytes = BytesIO()
-    ppt.save(ppt_bytes)
-    ppt_bytes.seek(0)  # Move cursor to the beginning of the file
-
-    return ppt_bytes, slide_count
+    # Save the presentation
+    ppt.save(file_name)
+    return file_name
 
 # Streamlit UI
 st.set_page_config(page_title="Content and Research Analysis", layout="wide")
@@ -755,9 +750,6 @@ elif selected_section == "Research Search":
 # Streamlit Integration for PPT Generation
 elif selected_section == "PPT Development":
     st.markdown("---")
-
-    # Streamlit UI
-    st.markdown("---")
     st.header("📊 PPT Content Generation")
 
     # Step 1: Get the domain
@@ -770,36 +762,25 @@ elif selected_section == "PPT Development":
     topic = ""
     if domain:
         topic = st.text_input(
-            f"Enter the topic related to the {domain} domain:", 
+            f"Enter the topic related to the {domain} domain:",
             placeholder="e.g., Drug Discovery, Stock Market Trends, Online Learning Platforms"
         )
 
-    # Step 3: Generate and preview content before PPT download
+    # Step 3: Generate and download PPT
     if st.button("Generate PPT"):
         if domain and topic:
             st.info("Generating detailed content for your presentation. Please wait...")
             detailed_content = generate_detailed_ppt_content(domain, topic)
-
             if "Error" not in detailed_content:
-                ppt_bytes, slide_count = create_professional_ppt(detailed_content, f"{domain} - {topic}")
-                st.success("PowerPoint presentation generated successfully!")
-
-                # Display structured content preview
-                st.subheader("📄 Generated Content Preview")
-                for i, slide in enumerate(detailed_content, 1):
-                    st.write(f"**Slide {i}: {slide['title']}**")
-                    st.write(f"{slide['content']}\n")
-
-                # Show slide count
-                st.write(f"🔢 **Total Slides:** {slide_count}")
-
-                # Download button
-                st.download_button(
-                    "📥 Download Your PPT",
-                    ppt_bytes,
-                    file_name=f"{domain}_{topic}.pptx",
-                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-                )
+                ppt_file_name = create_professional_ppt(detailed_content, f"{domain} - {topic}")
+                st.success("Your PowerPoint presentation has been successfully generated!")
+                with open(ppt_file_name, "rb") as file:
+                    st.download_button(
+                        "Download Your PPT",
+                        file,
+                        file_name=ppt_file_name,
+                        mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    )
             else:
                 st.error(detailed_content)
         else:
@@ -810,7 +791,6 @@ elif selected_section == "PPT Development":
 
     # Footer
     st.caption("Developed by **Corbin Technology Solutions**")
-
 
 
 elif selected_section == "Instructions":
