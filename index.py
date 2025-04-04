@@ -594,7 +594,7 @@ elif selected_section == "PDF Analysis":
             )
 
             # Get response
-            response = fetch_gpt_response(full_prompt)
+            response = fetch_gpt_response_pdf(full_prompt)
 
             # Display the response
             st.subheader("Response")
