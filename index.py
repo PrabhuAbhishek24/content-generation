@@ -407,8 +407,8 @@ def generate_detailed_ppt_content(domain, topic):
     except Exception as e:
         return f"Error: {str(e)}"
 
-def create_professional_ppt(content, topic, file_name="presentation.pptx"):
-    """Create a well-formatted professional PowerPoint presentation."""
+def create_professional_ppt(content, topic):
+    """Create a well-formatted professional PowerPoint presentation and return as bytes."""
     ppt = Presentation()
 
     # Set consistent font styles
@@ -425,28 +425,32 @@ def create_professional_ppt(content, topic, file_name="presentation.pptx"):
     title = slide.shapes.title
     subtitle = slide.placeholders[1]
     title.text = topic
-    subtitle.text = f"A Comprehensive Overview in {domain} Domain"
+    subtitle.text = f"A Comprehensive Overview on {topic}"
 
-    # Process GPT content into slides
-    sections = content.split("\n\n")
-    for section in sections:
-        if ":" in section:  # Detect title: content structure
-            slide_title, slide_content = section.split(":", 1)
+    # Process structured content into slides
+    slide_count = 1  # Start with title slide
+    for slide_data in content:  # content is expected to be a list of dicts with 'title' and 'content'
+        slide_title = slide_data["title"]
+        slide_content = slide_data["content"]
 
-            # Add a new slide for each section
-            slide = ppt.slides.add_slide(ppt.slide_layouts[1])
-            title = slide.shapes.title
-            title.text = slide_title.strip()
+        # Add a new slide for each section
+        slide = ppt.slides.add_slide(ppt.slide_layouts[1])
+        title = slide.shapes.title
+        title.text = slide_title.strip()
 
-            # Add content to the slide
-            content_box = slide.placeholders[1]
-            content_box.text = slide_content.strip()
-            set_textbox_style(content_box.text_frame)
+        # Add content to the slide
+        content_box = slide.placeholders[1]
+        content_box.text = slide_content.strip()
+        set_textbox_style(content_box.text_frame)
 
-    # Save the presentation
-    ppt.save(file_name)
-    return file_name
+        slide_count += 1
 
+    # Save the presentation in memory buffer
+    ppt_bytes = BytesIO()
+    ppt.save(ppt_bytes)
+    ppt_bytes.seek(0)  # Move cursor to the beginning of the file
+
+    return ppt_bytes, slide_count
 
 # Streamlit UI
 st.set_page_config(page_title="Content and Research Analysis", layout="wide")
