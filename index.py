@@ -468,61 +468,66 @@ if selected_section == "About":
 
 elif selected_section == "Content Generation":
     st.header("🔍 Content Generation")
+    
     # User selects the domain first
-    domain = st.text_input("Enter the domain in which the answer is required:", placeholder="Example: Medical, Pharmaceutical, Finance, etc.")
-
+    domain = st.text_input(
+        "Enter the domain in which the answer is required:",
+        placeholder="Example: Medical, Pharmaceutical, Finance, etc."
+    )
 
     # Ensure session state exists for response storage
     if "generated_response" not in st.session_state:
-     st.session_state.generated_response = None
+        st.session_state.generated_response = None
 
     if domain:
-      query = st.text_area(
-        "Enter your query below:",
-        height=200,
-        placeholder=f"Enter any query related to the {domain} domain",
-      )
-    
-    if query:
-        # Check if a new query has been entered
-        if query != st.session_state.get("last_query"):
-              # Fetch response and store in session state
-              st.session_state.generated_response = fetch_gpt_response(domain,query)
-              st.session_state.last_query = query  # Update last query
+        query = st.text_area(
+            "Enter your query below:",
+            height=200,
+            placeholder=f"Enter any query related to the {domain} domain",
+        )
 
-        # Display the response
-        st.subheader("Response")
-        st.write(st.session_state.generated_response)
-    # Horizontal line before download options
+        if query:
+            # Check if a new query has been entered
+            if query != st.session_state.get("last_query"):
+                # Fetch response and store in session state
+                st.session_state.generated_response = fetch_gpt_response(domain, query)
+                st.session_state.last_query = query  # Update last query
+
+            # Display the response
+            st.subheader("Response")
+            st.write(st.session_state.generated_response)
+
+        # Horizontal line before download options
+        st.markdown("---")
+
+        # Download options
+        st.subheader("📥 Download Options")
+
+        # Button to download SCORM PDF
+        if st.button("Download the PDF as SCORM Package"):
+            save_as_scorm_pdf(st.session_state.generated_response)
+            st.success("SCORM package generated successfully!")
+
+        # Button to download SCORM Word
+        if st.button("Download the Word File as SCORM Package"):
+            scorm_word = save_as_scorm_word(st.session_state.generated_response, file_name="response.docx")
+            if scorm_word:
+                st.success("SCORM Word package generated successfully!")
+                st.download_button(
+                    label="Download SCORM Word Package",
+                    data=scorm_word,
+                    file_name="scorm_word_package.zip",
+                    mime="application/zip",
+                )
+            else:
+                st.error("Failed to generate SCORM Word package.")
+
+    # Horizontal line
     st.markdown("---")
 
-    # Download options
-    st.subheader("📥 Download Options")
+    # Footer
+    st.caption("Developed by **Corbin Technology Solutions**")
 
-    # Button to download SCORM PDF
-    if st.button("Download the PDF as SCORM Package"):
-        save_as_scorm_pdf(st.session_state.generated_response)
-        st.success("SCORM package generated successfully!")
-
-    # Button to download SCORM Word
-    if st.button("Download the Word File as SCORM Package"):
-        scorm_word = save_as_scorm_word(st.session_state.generated_response, file_name="response.docx")
-        if scorm_word:
-            st.success("SCORM Word package generated successfully!")
-            st.download_button(
-                label="Download SCORM Word Package",
-                data=scorm_word,
-                file_name="scorm_word_package.zip",
-                mime="application/zip",
-            )
-        else:
-            st.error("Failed to generate SCORM Word package.")
-
-   # Horizontal line
-   st.markdown("---")
-
-   # Footer
-   st.caption("Developed by **Corbin Technology Solutions**")
 
     
 elif selected_section == "PDF Analysis":
