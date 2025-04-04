@@ -458,6 +458,7 @@ selected_section = st.sidebar.selectbox("Navigation", sections)
 
 if selected_section == "About":
     st.header("📖 About")
+    st.markdown("---")
 
     st.info("### 1. What is this application about?")
     st.success(
@@ -498,6 +499,13 @@ if selected_section == "About":
         "This tool is ideal for professionals, researchers, educators, and content creators who require tailored content generation, "
         "research insights, and analysis tools across various domains."
     )
+    # Horizontal line
+    st.markdown("---")
+
+    # Footer
+    st.caption("Developed by **Corbin Technology Solutions**")
+
+    
 
 
 elif selected_section == "Content Generation":
