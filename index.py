@@ -675,6 +675,7 @@ elif selected_section == "CSV Content Generation":
 
 # Research Search Section
 elif selected_section == "Research Search":
+    st.markdown("---")
     st.header("🔬 Research Search")
     query = st.text_area("Enter a research query:", height=200)
     if query:
@@ -692,6 +693,12 @@ elif selected_section == "Research Search":
                 st.write(content["snippet"])
         else:
             st.write("No relevant research-related content found.")
+     # Horizontal line
+    st.markdown("---")
+
+    # Footer
+    st.caption("Developed by **Corbin Technology Solutions**")
+
 
 # Streamlit Integration for PPT Generation
 elif selected_section == "PPT Development":
