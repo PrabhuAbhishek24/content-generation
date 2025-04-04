@@ -675,9 +675,15 @@ elif selected_section == "CSV Content Generation":
 
 # Research Search Section
 elif selected_section == "Research Search":
-    st.markdown("---")
+    st.markdown("---"),
     st.header("🔬 Research Search")
-    query = st.text_area("Enter a research query:", height=200)
+
+    query = st.text_area(
+    "Enter a research query below:",
+    height=200,
+    placeholder="Example: cancer treatment, new medicines, vaccine updates"
+    )
+
     if query:
         search_results = google_custom_search(query)
         relevant_content = []
