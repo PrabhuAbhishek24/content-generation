@@ -675,7 +675,7 @@ elif selected_section == "CSV Content Generation":
 
 # Research Search Section
 elif selected_section == "Research Search":
-    st.markdown("---"),
+    st.markdown("---")
     st.header("🔬 Research Search")
 
     query = st.text_area(
