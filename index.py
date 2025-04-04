@@ -659,7 +659,7 @@ elif selected_section == "CSV Content Generation":
 
                 # Button to generate and download the CSV as a SCORM package
                 if st.button("Generate SCORM Package"):
-                    scorm_package = create_scorm_package_csv(csv_data, domain, query)
+                    scorm_package = create_scorm_package(csv_data, domain, query)
                     st.download_button(
                         label="Download CSV File as SCORM Package",
                         data=scorm_package.getvalue(),
