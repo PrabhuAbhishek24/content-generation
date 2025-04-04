@@ -269,6 +269,30 @@ def save_as_scorm_button(content):
         mime="application/zip"
     )
 
+def fetch_gpt_response(pdf_text, query):
+    try:
+        system_prompt = (
+            "You are an assistant that only answers queries based on the provided PDF content. "
+            "Do not use external knowledge or provide responses unrelated to the PDF. "
+            "If the query is not relevant to the PDF content, respond with: 'The query is not related to the uploaded PDF content.'"
+        )
+
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"PDF Content:\n{pdf_text}"},
+                {"role": "user", "content": f"Query: {query}"},
+            ],
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
+
+
+
 def get_response(text):
     try:
         response = openai.chat.completions.create(
@@ -549,50 +573,54 @@ elif selected_section == "Content Generation":
     st.caption("Developed by **Corbin Technology Solutions**")
 
 
-    
 elif selected_section == "PDF Analysis":
     st.header("📄 PDF Analysis")
 
     # Upload PDF
     pdf_file = st.file_uploader("Upload a PDF", type="pdf")
-    if pdf_file:
-        # Extract text from the uploaded PDF
+
+    # Initialize session state variables
+    if "pdf_text" not in st.session_state:
+        st.session_state.pdf_text = ""
+    if "pdf_response" not in st.session_state:
+        st.session_state.pdf_response = ""
+
+    # Extract text from PDF only once
+    if pdf_file and st.session_state.pdf_text == "":
         with io.BytesIO(pdf_file.read()) as pdf_stream:
-            extracted_text = extract_text_from_pdf(pdf_stream)
+            st.session_state.pdf_text = extract_text_from_pdf(pdf_stream)
 
-        # Display extracted text
+    # Show the extracted PDF text
+    if st.session_state.pdf_text:
         st.write("Extracted Text:")
-        st.text_area("PDF Content", extracted_text, height=200)
+        st.text_area("PDF Content", st.session_state.pdf_text, height=200, disabled=True)
 
-        # Input field to ask a question
-        query = st.text_input("Ask a question based on the PDF:")
-        if query:
-            # Generate GPT response based on the PDF content
-            response = fetch_gpt_response(f"Context: {extracted_text}\nQuestion: {query}")
+        # Ask user query based on uploaded PDF
+        query = st.text_input("Ask a question based on the PDF content:")
 
-            # Display the generated response
+        if query and st.button("Generate Response"):
+            st.info("Processing your query based on the uploaded PDF...")
+            st.session_state.pdf_response = fetch_gpt_response(
+                st.session_state.pdf_text, query
+            )
+
+        # Show the response if available
+        if st.session_state.pdf_response:
             st.subheader("Response")
-            st.write(response)
+            st.write(st.session_state.pdf_response)
 
-            # Display download options
             st.subheader("Download Options")
 
-            # Button to download the PDF content and response as a SCORM package
-            scorm_button = st.button("Generate the Response as PDF SCORM Package")
-            if scorm_button:
-                # Only save the response in the SCORM package
-                save_as_scorm_pdf(response)  # Save only the response in PDF
-                st.success("SCORM package generated. Check the 'Download SCORM Package' button.")
+            # SCORM PDF Package
+            if st.button("Generate the Response as PDF SCORM Package"):
+                save_as_scorm_pdf(st.session_state.pdf_response)
+                st.success("SCORM PDF package generated successfully.")
 
+            # SCORM Word Package
             if st.button("Generate the Response as SCORM Word Package"):
-                # Generate the SCORM package for the Word document with only the response
-                scorm_word = save_as_scorm_word(response, file_name="response.docx")
-
+                scorm_word = save_as_scorm_word(st.session_state.pdf_response, file_name="response.docx")
                 if scorm_word:
-                    # Display success message
-                    st.success("SCORM package generated. Click the 'Download SCORM Package' button below.")
-
-                    # Display the download button
+                    st.success("SCORM Word package generated successfully.")
                     st.download_button(
                         label="Download SCORM Word Package",
                         data=scorm_word,
@@ -601,7 +629,8 @@ elif selected_section == "PDF Analysis":
                     )
                 else:
                     st.error("Failed to generate SCORM Word package.")
-
+    else:
+        st.warning("Please upload a PDF file before asking a question.")
 
 # Streamlit Section to Handle User Input and SCORM Package Generation
 elif selected_section == "CSV Content Generation":
