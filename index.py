@@ -599,7 +599,7 @@ elif selected_section == "PDF Analysis":
             )
 
             # Get response and store in session state
-            st.session_state.pdf_response = fetch_gpt_response(full_prompt)
+            st.session_state.pdf_response = fetch_gpt_response(query)
 
         # Display the generated response
         if st.session_state.pdf_response:
