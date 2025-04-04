@@ -457,8 +457,8 @@ sections = ["About", "Content Generation", "PDF Analysis","CSV Content Generatio
 selected_section = st.sidebar.selectbox("Navigation", sections)
 
 if selected_section == "About":
-    st.header("📖 About")
     st.markdown("---")
+    st.header("📖 About")
 
     st.info("### 1. What is this application about?")
     st.success(
