@@ -586,6 +586,7 @@ elif selected_section == "PDF Analysis":
 
         # Ask a question based on the PDF
         query = st.text_input("Ask a question based on the PDF:")
+        
         if query:
             # Only answer questions related to the uploaded PDF
             full_prompt = (
@@ -603,8 +604,9 @@ elif selected_section == "PDF Analysis":
             st.subheader("Response")
             st.write(response)
 
-    # Horizontal line
-    st.markdown("---")
+            # Horizontal line
+            st.markdown("---")
+
             # Download Options
             st.subheader("Download Options")
 
@@ -634,7 +636,6 @@ elif selected_section == "PDF Analysis":
 
     # Footer
     st.caption("Developed by **Corbin Technology Solutions**")
-
     
 # Streamlit Section to Handle User Input and SCORM Package Generation
 elif selected_section == "CSV Content Generation":
