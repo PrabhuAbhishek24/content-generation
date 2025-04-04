@@ -504,12 +504,12 @@ elif selected_section == "Content Generation":
         st.subheader("📥 Download Options")
 
         # Button to download SCORM PDF
-        if st.button("Download the PDF as SCORM Package"):
+        if st.button("Generate the PDF as SCORM Package"):
             save_as_scorm_pdf(st.session_state.generated_response)
             st.success("SCORM package generated successfully!")
 
         # Button to download SCORM Word
-        if st.button("Download the Word File as SCORM Package"):
+        if st.button("Generate the Word File as SCORM Package"):
             scorm_word = save_as_scorm_word(st.session_state.generated_response, file_name="response.docx")
             if scorm_word:
                 st.success("SCORM Word package generated successfully!")
