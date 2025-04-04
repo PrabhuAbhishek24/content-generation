@@ -364,36 +364,33 @@ def csv_to_dataframe(csv_string):
     except Exception as e:
         return None  # Handle invalid CSV cases
 
-
-def generate_detailed_ppt_content(topic):
-    """Generate detailed content for a presentation using GPT."""
+def generate_detailed_ppt_content(domain, topic):
+    """Generate detailed content for a presentation using GPT based on the selected domain and topic."""
     prompt = (
-        f"You are an expert in the pharmaceutical and medical domain.Only generate ppt for those queries and dont answer any other queries "
-        f"Generate a professional, formal PowerPoint presentation on the topic: '{topic}'. "
-        f"1. Include detailed content for each slide, with a proper introduction, key points, examples, and conclusion. "
-        f"-. All the slides must contain atleast 4 points and not paragraph (Detailed points)."
-        f"2. Ensure all key points are elaborated and written in a formal and organized format. "
-        f"3. Use appropriate headings, subpoints, and examples relevant to the medical or pharmaceutical domain. "
-        f"4. The structure should include: "
-        f"- Title Slide (topic, subtitle, author name placeholder) "
-        f"- Introduction Slide (definition and importance of the topic) "
-        f"- 4-6 Key Point Slides (elaborated details for each key point) "
-        f"- Case Studies/Examples Slide (real-world examples or clinical applications) "
-        f"- Conclusion Slide (future implications or summary). "
-        f"Output the content for each slide in detail. Do not use vague terms. Be specific and thorough."
+        f"You are an expert in the {domain} domain. Generate a professional, formal PowerPoint presentation on the topic: '{topic}'.\n\n"
+        f"Instructions:\n"
+        f"1. All content must be specific to the {domain} domain and based on the topic '{topic}'.\n"
+        f"2. Each slide must have at least 4 well-written bullet points, not paragraphs.\n"
+        f"3. Ensure formal tone, clarity, and relevance to the chosen domain.\n"
+        f"4. Structure should include:\n"
+        f"   - Title Slide (Domain, Topic, Author Name placeholder)\n"
+        f"   - Introduction Slide (Definition and importance of the topic)\n"
+        f"   - 4–6 Key Point Slides (with elaborated points)\n"
+        f"   - Case Studies/Examples Slide (with real-world relevance to the domain)\n"
+        f"   - Conclusion Slide (with summary/future direction)\n\n"
+        f"Output only detailed slide-wise content."
     )
     try:
         response = openai.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "You are a medical and pharmaceutical domain expert."},
+                {"role": "system", "content": f"You are a domain expert in {domain}."},
                 {"role": "user", "content": prompt},
             ],
         )
         return response.choices[0].message.content
     except Exception as e:
         return f"Error: {str(e)}"
-
 
 def create_professional_ppt(content, topic, file_name="presentation.pptx"):
     """Create a well-formatted professional PowerPoint presentation."""
@@ -413,7 +410,7 @@ def create_professional_ppt(content, topic, file_name="presentation.pptx"):
     title = slide.shapes.title
     subtitle = slide.placeholders[1]
     title.text = topic
-    subtitle.text = "A Comprehensive Overview in the Medical and Pharmaceutical Domain"
+    subtitle.text = f"A Comprehensive Overview in {domain} Domain"
 
     # Process GPT content into slides
     sections = content.split("\n\n")
@@ -434,6 +431,8 @@ def create_professional_ppt(content, topic, file_name="presentation.pptx"):
     # Save the presentation
     ppt.save(file_name)
     return file_name
+
+
 
 # Streamlit UI
 st.set_page_config(page_title="Content and Research Analysis", layout="wide")
@@ -697,26 +696,49 @@ elif selected_section == "Research Search":
 
 # Streamlit Integration for PPT Generation
 elif selected_section == "PPT Development":
-    st.header("📊 Professional PPT Development")
-    topic = st.text_input("Enter the topic for your presentation:")
+    st.header("📊 PPT Content Generation")
+
+    # Step 1: Get the domain
+    domain = st.text_input(
+        "Enter the domain for your presentation:",
+        placeholder="e.g., Medical, Finance, Education"
+    )
+
+    # Step 2: Get the topic
+    topic = ""
+    if domain:
+        topic = st.text_input(
+            f"Enter the topic related to the {domain} domain:",
+            placeholder="e.g., Drug Discovery, Stock Market Trends, Online Learning Platforms"
+        )
+
+    # Step 3: Generate and download PPT
     if st.button("Generate PPT"):
-        if topic:
+        if domain and topic:
             st.info("Generating detailed content for your presentation. Please wait...")
-            detailed_content = generate_detailed_ppt_content(topic)
+            detailed_content = generate_detailed_ppt_content(domain, topic)
+
             if "Error" not in detailed_content:
-                ppt_file_name = create_professional_ppt(detailed_content, topic)
+                ppt_file_name = create_professional_ppt(detailed_content, topic, domain)
                 st.success("Your PowerPoint presentation has been successfully generated!")
+
                 with open(ppt_file_name, "rb") as file:
                     st.download_button(
-                        "Download Your PPT",
-                        file,
-                        file_name=ppt_file_name,
+                        label="Download Your PPT",
+                        data=file,
+                        file_name=ppt_file_name.split("/")[-1],
                         mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
                     )
             else:
                 st.error(detailed_content)
         else:
-            st.error("Please enter a valid topic.")
+            st.warning("Please enter both domain and topic before generating the presentation.")
+
+    # Horizontal line
+    st.markdown("---")
+
+    # Footer
+    st.caption("Developed by **Corbin Technology Solutions**")
 
 
 elif selected_section == "Instructions":
