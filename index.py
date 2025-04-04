@@ -13,7 +13,7 @@ import zipfile
 import os
 from pathlib import Path
 import csv
-
+import pandas as pd
 
 # Access keys from Streamlit Secrets
 openai.api_key = st.secrets["api"]["OPENAI_API_KEY"]
