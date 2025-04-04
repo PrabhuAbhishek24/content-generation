@@ -563,28 +563,23 @@ elif selected_section == "Content Generation":
     # Footer
     st.caption("Developed by **Corbin Technology Solutions**")
 
-
 elif selected_section == "PDF Analysis":
     st.header("📄 PDF Analysis")
-
-    # Initialize session state
-    if "pdf_text" not in st.session_state:
-        st.session_state.pdf_text = ""
-    if "pdf_response" not in st.session_state:
-        st.session_state.pdf_response = ""
 
     # Upload PDF
     pdf_file = st.file_uploader("Upload a PDF", type="pdf")
 
+    # Initialize variables
+    extracted_text = ""
+    response = ""
+
     if pdf_file:
         with io.BytesIO(pdf_file.read()) as pdf_stream:
             extracted_text = extract_text_from_pdf(pdf_stream)
-            st.session_state.pdf_text = extracted_text
 
-    # Show Extracted Text if available
-    if st.session_state.pdf_text:
+        # Show Extracted Text
         st.write("Extracted Text:")
-        st.text_area("PDF Content", st.session_state.pdf_text, height=200)
+        st.text_area("PDF Content", extracted_text, height=200)
 
         # Ask a question based on the PDF
         query = st.text_input("Ask a question based on the PDF:")
@@ -594,27 +589,26 @@ elif selected_section == "PDF Analysis":
                 "You are an expert in analyzing PDFs and providing highlights, summaries, analyses, and insights. "
                 "Only answer questions based strictly on the content of the uploaded PDF. "
                 "Do not answer any questions that are unrelated or outside the scope of the PDF.\n\n"
-                f"PDF Content: {st.session_state.pdf_text}\n\n"
+                f"PDF Content: {extracted_text}\n\n"
                 f"Question: {query}"
             )
 
-            # Get response and store in session state
-            st.session_state.pdf_response = fetch_gpt_response_pdf(query)
+            # Get response
+            response = fetch_gpt_response(full_prompt)
 
-        # Display the generated response
-        if st.session_state.pdf_response:
+            # Display the response
             st.subheader("Response")
-            st.write(st.session_state.pdf_response)
+            st.write(response)
 
             # Download Options
             st.subheader("Download Options")
 
             if st.button("Generate the Response as PDF SCORM Package"):
-                save_as_scorm_pdf(st.session_state.pdf_response)
+                save_as_scorm_pdf(response)
                 st.success("SCORM package generated. Check the 'Download SCORM Package' button.")
 
             if st.button("Generate the Response as Word SCORM Package"):
-                scorm_word = save_as_scorm_word(st.session_state.pdf_response, file_name="response.docx")
+                scorm_word = save_as_scorm_word(response, file_name="response.docx")
 
                 if scorm_word:
                     st.success("SCORM package generated. Click the 'Download SCORM Package' button below.")
@@ -626,6 +620,9 @@ elif selected_section == "PDF Analysis":
                     )
                 else:
                     st.error("Failed to generate SCORM Word package.")
+
+    else:
+        st.info("Please upload a PDF file to begin analysis.")
 
     # Horizontal line
     st.markdown("---")
