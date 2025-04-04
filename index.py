@@ -269,8 +269,7 @@ def save_as_scorm_button(content):
         mime="application/zip"
     )
 
-
-def get_response_csv(text):
+def get_response(text):
     try:
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -285,7 +284,7 @@ def get_response_csv(text):
 # Function to fetch data from GPT-3 based on domain and query
 
 # Function to fetch structured CSV data from GPT-3
-def fetch_gpt_response_csv(domain, query):
+def fetch_gpt_response(domain, query):
     prompt = f"""
     Please provide reliable and accurate data related to the following query in the domain of {domain}.
     Don't answer queries or provide CSV data for any other domain except the one provided by the user.
@@ -303,7 +302,7 @@ def fetch_gpt_response_csv(domain, query):
     
     Query: {query}
     """
-    response = get_response_csv(prompt)  # Fetch response from GPT-3
+    response = get_response(prompt)  # Fetch response from GPT-3
     return response.strip()
 
 
@@ -311,42 +310,42 @@ def fetch_gpt_response_csv(domain, query):
 
 
 
-# Function to create SCORM package dynamically based on domain and query
-def create_scorm_package(csv_content, domain, query):
+# Function to create SCORM package
+def create_scorm_package(csv_content):
     # Create an in-memory binary stream for the zip file
     zip_buffer = io.BytesIO()
 
     with zipfile.ZipFile(zip_buffer, "w") as zip_file:
         # Add the CSV content to the zip file
-        zip_file.writestr("data.csv", csv_content)
+        zip_file.writestr("medical_pharma_data.csv", csv_content)
 
-        # Dynamically create imsmanifest.xml content
-        imsmanifest_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+        # Add imsmanifest.xml to the zip file
+        imsmanifest_content = """<?xml version="1.0" encoding="UTF-8"?>
 <manifest identifier="scorm_2004" version="1.0">
     <organizations>
         <organization identifier="org_1">
-            <title>{domain} SCORM Package</title>
+            <title>Medical and Pharma SCORM Package</title>
         </organization>
     </organizations>
     <resources>
         <resource identifier="res_1" type="webcontent" href="index.html">
-            <file href="data.csv"/>
+            <file href="medical_pharma_data.csv"/>
             <file href="index.html"/>
         </resource>
     </resources>
 </manifest>"""
         zip_file.writestr("imsmanifest.xml", imsmanifest_content)
 
-        # Create dynamic index.html content with the domain and query
-        index_html_content = f"""<!DOCTYPE html>
+        # Add index.html to the zip file
+        index_html_content = """
+<!DOCTYPE html>
 <html>
 <head>
-    <title>{domain} Data</title>
+    <title>Medical and Pharma Data</title>
 </head>
 <body>
-    <h1>Welcome to the {domain} SCORM Package</h1>
-    <p><strong>Query:</strong> {query}</p>
-    <p>This package contains generated data based on the domain and query provided.</p>
+    <h1>Welcome to the Medical and Pharma SCORM Package</h1>
+    <p>This package contains reliable medical and pharmaceutical data.</p>
 </body>
 </html>
 """
@@ -355,6 +354,7 @@ def create_scorm_package(csv_content, domain, query):
     # Rewind the buffer to the beginning
     zip_buffer.seek(0)
     return zip_buffer
+
 # Function to convert CSV string to DataFrame
 def csv_to_dataframe(csv_string):
     try:
@@ -632,7 +632,7 @@ elif selected_section == "CSV Content Generation":
             # Check if a new query has been entered
             if query != st.session_state.get("last_query"):
                 # Fetch response and store in session state
-                st.session_state.generated_response = fetch_gpt_response_csv(domain, query)
+                st.session_state.generated_response = fetch_gpt_response(domain, query)
                 st.session_state.last_query = query  # Update last query
 
             # Convert response to CSV format and display
