@@ -794,16 +794,17 @@ elif selected_section == "PPT Development":
     st.caption("Developed by **Corbin Technology Solutions**")
 
 elif selected_section == "Instructions":
+    st.markdown("---")
     st.header("📝 Instructions")
     st.info("Follow the steps below to effectively use each feature in the application.")
 
     # General Information
     with st.expander("📋 General Usage Guidelines"):
         st.markdown("""
-        - This application is developed for **medical** and **pharmaceutical** domain-related tasks.
-        - Ensure that queries are clear and concise for better accuracy.
-        - Uploaded files (PDFs, CSVs) must adhere to the specified formats.
-        - Always review the generated outputs before downloading.
+        - This is a **generalized system** designed for multiple domains (e.g., education, technology, business, etc.).
+        - Ensure your queries are relevant, clear, and domain-specific for the best results.
+        - Upload files (PDFs, CSVs) in supported formats.
+        - Always review generated content before downloading or sharing.
         """)
 
     st.subheader("🔍 Feature-specific Instructions")
@@ -811,65 +812,75 @@ elif selected_section == "Instructions":
     # Content Generation Instructions
     with st.expander("1️⃣ **Content Generation**"):
         st.markdown("""
-        - Use this module to generate content for **pharmaceutical** and **medical** queries.
+        - Use this module to generate content across different domains.
         - **Steps**:
-          1. Enter your query in the text area provided.
-          2. Click the **Submit** button to receive a detailed response.
-          3. Download the response in **PDF** or **Word SCORM Package** format.
+          1. Enter the **domain** in which the query is to be asked.
+          2. Enter your **query** in the text area.
+          3. Click the **Submit** button to get a detailed response.
+          4. Download the response as a **PDF SCORM** or **Word SCORM Package**.
         """)
 
     # PDF Analysis Instructions
     with st.expander("2️⃣ **PDF Analysis**"):
         st.markdown("""
-        - Analyze and extract content from uploaded PDFs.
+        - Analyze and extract content from uploaded PDFs and ask domain-specific questions.
         - **Steps**:
-          1. Upload a **PDF** file using the file uploader.
-          2. The content of the PDF will be extracted and displayed.
-          3. Ask a query related to the PDF to get context-based answers.
-          4. Download the response in **SCORM-compliant** formats.
+          1. Upload a **PDF** file.
+          2. Ask your **query** based on the content.
+          3. Click **Submit** to obtain a relevant response.
+          4. Download the response as a **PDF SCORM** or **Word SCORM Package**.
         """)
 
     # CSV Content Generation Instructions
     with st.expander("3️⃣ **CSV Content Generation**"):
         st.markdown("""
-        - Generate CSV data related to medical or pharmaceutical queries.
+        - Generate structured CSV data based on your input query across various domains.
         - **Steps**:
-          1. Enter your query in the text area provided.
-          2. Click the **Generate CSV File** button to generate data.
-          3. Download the generated data as a **CSV SCORM Package**.
+          1. Enter the **domain** for which the query is to be asked.
+          2. Enter your **query**.
+          3. Click **Submit** to generate CSV content.
+          4. Download as a **CSV file** or **CSV SCORM Package**.
         """)
 
     # Research Search Instructions
     with st.expander("4️⃣ **Research Search**"):
         st.markdown("""
-        - Search for research articles, papers, or journals in the medical and pharmaceutical domains.
+        - Retrieve research papers, articles, journals, and other relevant resources.
         - **Steps**:
-          1. Enter your research query in the text area.
-          2. View a list of relevant results with titles, snippets, and links.
-          3. Click on a title to navigate to the full content.
+          1. Enter your **research query**.
+          2. Click **Submit** to get search results.
+          3. Access links to relevant research material directly from the results.
         """)
 
     # PPT Development Instructions
     with st.expander("5️⃣ **PPT Development**"):
         st.markdown("""
-        - Create professional PowerPoint presentations based on medical and pharmaceutical topics.
+        - Create high-quality PowerPoint presentations based on any topic or domain.
         - **Steps**:
-          1. Enter a valid topic in the input field.
-          2. Click the **Generate PPT** button to create a detailed presentation.
-          3. Download the PPT file using the download button provided.
+          1. Enter the **domain** and your **query/topic**.
+          2. Click **Submit** to generate a presentation.
+          3. Download the generated **PPT** file using the download button.
         """)
 
     # Footer Success Message
-    st.success("Refer to these instructions for smooth navigation and utilization of features!")
+    st.success("Refer to these instructions for smooth navigation and utilization of all features!")
+    # Horizontal line
+    st.markdown("---")
+
+    # Footer
+    st.caption("Developed by **Corbin Technology Solutions**")
+
 
 elif selected_section == "Credits":
+    st.markdown("---")
+    
     st.header("👨‍💻 Credits")
 
     # Highlight the developer information
     st.subheader("🌟 Developed By")
     st.markdown("""
     **Corbin Technology Solutions**  
-    Bringing innovative solutions for the pharmaceutical and medical domains.
+    Bringing innovative solutions for AI Chatbots and LMS Systems.
     """)
 
     # Technologies used
