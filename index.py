@@ -564,6 +564,9 @@ elif selected_section == "Content Generation":
     st.caption("Developed by **Corbin Technology Solutions**")
 
 elif selected_section == "PDF Analysis":
+    
+    # Horizontal line
+    st.markdown("---")
     st.header("📄 PDF Analysis")
 
     # Upload PDF
@@ -600,6 +603,8 @@ elif selected_section == "PDF Analysis":
             st.subheader("Response")
             st.write(response)
 
+    # Horizontal line
+    st.markdown("---")
             # Download Options
             st.subheader("Download Options")
 
