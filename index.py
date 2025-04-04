@@ -269,7 +269,7 @@ def save_as_scorm_button(content):
         mime="application/zip"
     )
 
-def fetch_gpt_response(query):
+def fetch_gpt_response_pdf(query):
     try:
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -599,7 +599,7 @@ elif selected_section == "PDF Analysis":
             )
 
             # Get response and store in session state
-            st.session_state.pdf_response = fetch_gpt_response(query)
+            st.session_state.pdf_response = fetch_gpt_response_pdf(query)
 
         # Display the generated response
         if st.session_state.pdf_response:
