@@ -311,7 +311,7 @@ def fetch_gpt_response(domain, query):
 
 
 # Function to create SCORM package
-def create_scorm_package(csv_content):
+def create_scorm_package_csv(csv_content):
     # Create an in-memory binary stream for the zip file
     zip_buffer = io.BytesIO()
 
@@ -658,7 +658,7 @@ elif selected_section == "CSV Content Generation":
 
                 # Button to generate and download the CSV as a SCORM package
                 if st.button("Generate SCORM Package"):
-                    scorm_package = create_scorm_package(csv_data, domain, query)
+                    scorm_package = create_scorm_package_csv(csv_data, domain, query)
                     st.download_button(
                         label="Download CSV File as SCORM Package",
                         data=scorm_package.getvalue(),
