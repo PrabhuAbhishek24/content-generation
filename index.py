@@ -487,6 +487,7 @@ if selected_section == "About":
 
 
 elif selected_section == "Content Generation":
+    st.markdown("---")
     st.header("🔍 Content Generation")
     
     # User selects the domain first
