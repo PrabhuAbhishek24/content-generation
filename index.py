@@ -642,8 +642,9 @@ elif selected_section == "CSV Content Generation":
             if df is not None:
                 st.subheader("CSV Data Preview")
                 st.dataframe(df)  # Display CSV as table
-    # Horizontal line before download options
-    st.markdown("---")
+
+                # Horizontal line before download options
+                st.markdown("---")
 
                 # Provide a button to download the CSV file
                 csv_buffer = io.StringIO()
@@ -672,7 +673,6 @@ elif selected_section == "CSV Content Generation":
 
     # Footer
     st.caption("Developed by **Corbin Technology Solutions**")
-
 
 # Research Search Section
 elif selected_section == "Research Search":
