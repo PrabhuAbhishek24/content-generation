@@ -773,7 +773,6 @@ elif selected_section == "PPT Development":
             detailed_content = generate_detailed_ppt_content(domain, topic)
 
             if "Error" not in detailed_content:
-                ppt_bytes, slide_count = create_professional_ppt(detailed_content, f"{domain} - {topic}")
                 st.success("PowerPoint presentation generated successfully!")
 
                 # Display structured content preview
