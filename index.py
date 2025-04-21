@@ -778,7 +778,6 @@ elif selected_section == "PPT Development":
                 # Download button
                 st.download_button(
                     "📥 Download Your PPT",
-                    ppt_bytes,
                     file_name=f"{domain}_{topic}.pptx",
                     mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
                 )
