@@ -784,7 +784,7 @@ elif selected_section == "PPT Development":
             )
         else:
             st.error(detailed_content)
-     else:
+      else:
         st.warning("Please enter both domain and topic before generating the presentation.")
 
     # Horizontal line
