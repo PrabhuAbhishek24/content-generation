@@ -775,15 +775,6 @@ elif selected_section == "PPT Development":
             if "Error" not in detailed_content:
                 st.success("PowerPoint presentation generated successfully!")
 
-                # Display structured content preview
-                st.subheader("📄 Generated Content Preview")
-                for i, slide in enumerate(detailed_content, 1):
-                    st.write(f"**Slide {i}: {slide['title']}**")
-                    st.write(f"{slide['content']}\n")
-
-                # Show slide count
-                st.write(f"🔢 **Total Slides:** {slide_count}")
-
                 # Download button
                 st.download_button(
                     "📥 Download Your PPT",
