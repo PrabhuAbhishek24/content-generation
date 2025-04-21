@@ -768,23 +768,24 @@ elif selected_section == "PPT Development":
 
     # Step 3: Generate and preview content before PPT download
     if st.button("Generate PPT"):
-        if domain and topic:
-            st.info("Generating detailed content for your presentation. Please wait...")
-            detailed_content = generate_detailed_ppt_content(domain, topic)
+      if domain and topic:
+        st.info("Generating detailed content for your presentation. Please wait...")
+        detailed_content = generate_detailed_ppt_content(domain, topic)
 
-            if "Error" not in detailed_content:
-                st.success("PowerPoint presentation generated successfully!")
+        if "Error" not in detailed_content:
+            st.success("PowerPoint presentation generated successfully!")
 
-                # Download button
-                st.download_button(
-                    "📥 Download Your PPT",
-                    file_name=f"{domain}_{topic}.pptx",
-                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-                )
-            else:
-                st.error(detailed_content)
+            # Download button (fix: add 'data' parameter)
+            st.download_button(
+                label="📥 Download Your PPT",
+                data=detailed_content,  # <-- This is the required parameter
+                file_name=f"{domain}_{topic}.pptx",
+                mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            )
         else:
-            st.warning("Please enter both domain and topic before generating the presentation.")
+            st.error(detailed_content)
+     else:
+        st.warning("Please enter both domain and topic before generating the presentation.")
 
     # Horizontal line
     st.markdown("---")
